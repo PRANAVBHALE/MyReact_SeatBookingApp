@@ -25,7 +25,6 @@ class App extends Component {
   }
 
   getIndexDiffFromNextTrue(rows, seatNo) {
-    console.log('1ndrrrrr', rows);
 
     const nextTrue = _.findIndex(rows, { 'isBooked': true }, (seatNo - 1))
     const diff = nextTrue - (seatNo - 1)
@@ -55,7 +54,6 @@ class App extends Component {
     } else {
 
       const consequitiveAvailableSeats = this.getIndexDiffFromNextTrue(rows, seatNo)
-      console.log('yessssss', consequitiveAvailableSeats);
       if (selectNoOfSeats > consequitiveAvailableSeats) {
         this.setState({
           message: 'You will not get consequitiveSeats'
@@ -64,10 +62,9 @@ class App extends Component {
 
         // const isNewSeatSelected = this.isNewSeatSelected(rowId,)
 
-        console.log('bookwill success');
         const clikedSeatIndex = seatNo - 1
-        console.log('firstTicket', clikedSeatIndex)
-        console.log('lastticket', clikedSeatIndex + (selectNoOfSeats - 1));
+        // console.log('firstTicket', clikedSeatIndex)
+        // console.log('lastticket', clikedSeatIndex + (selectNoOfSeats - 1));
         const lastSeat = clikedSeatIndex + (selectNoOfSeats - 1)
         const dupRow = rows.slice()
         let selectedSeats = _.filter(dupRow, (o) => {
@@ -79,11 +76,7 @@ class App extends Component {
           o.isBooked = true
           return o;
         })
-        console.log('dddddddddd', dupRow);
-
-
-        console.log(prevOldRowData);
-
+      
         var oldRow
 
         if (prevOldRowData !== null) {
@@ -96,8 +89,6 @@ class App extends Component {
             return o;
           })
         }
-        console.log(oldRow);
-        debugger
         // const moreOld = {...oldRow}
         //  [seatingLayout[selectedRowId]] = oldRow
 
@@ -149,7 +140,6 @@ class App extends Component {
           justifyContent: 'space-around'
         }}>
           {seatingLayout.map((rows, index) => {
-            // console.log('wwwwwwwwwwwww',rows);
             const rowColor = index + 1 < 3 ? '#00bfff' : '#ffe4e1'
             return (
               <div style={{
