@@ -11,8 +11,8 @@ class App extends Component {
 
   state = {
 
-    prevFirstSelectedSeat:null,
-    prevLastSelectedSeat:null,
+    prevFirstSelectedSeat: null,
+    prevLastSelectedSeat: null,
     selectedRowId: null,
     totalCost: 0,
     royalType: 400,
@@ -20,7 +20,7 @@ class App extends Component {
     selectNoOfSeats: 0,
     message: '',
     seatingLayout: seatLayout,
-    selectedRowData:null,
+    selectedRowData: null,
 
   }
 
@@ -35,10 +35,10 @@ class App extends Component {
 
   selectSeats(rows, isBooked, seatNo, rowId) {
 
-    const { selectedRowId,selectNoOfSeats, seatingLayout, royalType, normalType , prevFirstSelectedSeat , prevLastSelectedSeat,} = this.state
-    let prevOldRowData = []
-    prevOldRowData = JSON.parse(sessionStorage.getItem('oldRowData'))
-
+    const { selectedRowId, selectNoOfSeats, royalType, normalType, prevFirstSelectedSeat, prevLastSelectedSeat, } = this.state
+  //  let prevOldRowData = []
+    const prevOldRowData = JSON.parse(sessionStorage.getItem('oldRowData'))
+    var {seatingLayout} = this.state
 
     let rowType
     if (rowId < 2) {
@@ -85,8 +85,8 @@ class App extends Component {
         console.log(prevOldRowData);
 
         var oldRow
-        
-        if(prevOldRowData !== null){
+
+        if (prevOldRowData !== null) {
           oldRow = prevOldRowData.slice()
           let prevSelectedSeats = _.filter(oldRow, (o) => {
             return o.isBooked === true && o.seatNo >= (prevFirstSelectedSeat + 1) && o.seatNo <= (prevLastSelectedSeat + 1)
@@ -97,20 +97,25 @@ class App extends Component {
           })
         }
         console.log(oldRow);
-        
-       
         debugger
+        // const moreOld = {...oldRow}
+        //  [seatingLayout[selectedRowId]] = oldRow
+
+        seatLayout[rowId] = dupRow
+        seatLayout[selectedRowId] = oldRow
+        // [seatingLayout[rowId]] = dupRow,
+        // [seatingLayout[selectedRowId]] = oldRow,
         this.setState(() => ({
-          [seatingLayout[rowId]]: dupRow,
-          selectedRowData:dupRow,
+
+          seatingLayout,
+          selectedRowData: dupRow,
           totalCost: rowType * selectNoOfSeats,
           message: '',
           selectedRowId: rowId,
-          prevFirstSelectedSeat:clikedSeatIndex,
-          prevLastSelectedSeat:lastSeat,
-        }),() => ({
-          [seatingLayout[selectedRowId]]: oldRow,
+          prevFirstSelectedSeat: clikedSeatIndex,
+          prevLastSelectedSeat: lastSeat,
         }))
+        
       }
 
     }
@@ -123,10 +128,14 @@ class App extends Component {
     })
   }
 
+  getAlphabets() {
+    return "A"
+  }
+
   render() {
 
-    const { seatingLayout, message, selectNoOfSeats, totalCost,selectedRowData } = this.state
-    sessionStorage.setItem('oldRowData',JSON.stringify(selectedRowData))
+    const { seatingLayout, message, selectNoOfSeats, totalCost, selectedRowData } = this.state
+    sessionStorage.setItem('oldRowData', JSON.stringify(selectedRowData))
 
     return (
       <div>
@@ -141,17 +150,19 @@ class App extends Component {
         }}>
           {seatingLayout.map((rows, index) => {
             // console.log('wwwwwwwwwwwww',rows);
-
+            const rowColor = index + 1 < 3 ? '#00bfff' : '#ffe4e1'
             return (
               <div style={{
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-around'
+                justifyContent: 'space-around',
+                backgroundColor: rowColor
               }}
                 key={uuid()}
+
               >
 
-                <div>{index + 1}</div>
+                <div >{index + 1} {index + 1 < 3 ? "Recliner" : "Normal"}</div>
                 {rows.map((seat) => {
 
                   const seatColor = seat.isBooked ? '#b3b3b3' : 'white'
@@ -166,8 +177,8 @@ class App extends Component {
                         border: '2px solid black',
                         borderRadius: '35%',
                         backgroundColor: seatColor,
-                        width: '20px'
-
+                        width: '20px',
+                        visibility: seat.display
                       }}
 
                       onClick={() => this.selectSeats(rows, seat.isBooked, seat.seatNo, index)}
